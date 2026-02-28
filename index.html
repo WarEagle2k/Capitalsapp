@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U.S. State Capitals Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>U.S. State Capitals Quiz</h1>
+    <p class="subtitle">Click a state and type its capital</p>
+    <div id="scoreboard">
+      <span id="correct-count" class="score correct">Correct: 0</span>
+      <span id="incorrect-count" class="score incorrect">Incorrect: 0</span>
+      <span id="remaining-count" class="score remaining">Remaining: 50</span>
+      <button id="reset-btn">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="map-container">
+      <svg id="us-map" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div id="modal-overlay" class="hidden">
+      <div id="modal">
+        <h2 id="modal-state-name"></h2>
+        <form id="capital-form">
+          <label for="capital-input">Enter the capital:</label>
+          <input type="text" id="capital-input" autocomplete="off" autofocus placeholder="Type capital here...">
+          <div id="modal-buttons">
+            <button type="submit" id="submit-btn">Submit</button>
+            <button type="button" id="cancel-btn">Cancel</button>
+          </div>
+        </form>
+        <p id="modal-feedback" class="hidden"></p>
+      </div>
+    </div>
+  </main>
+
+  <div id="completion-banner" class="hidden">
+    <h2>Quiz Complete!</h2>
+    <p id="completion-message"></p>
+    <button id="completion-reset-btn">Play Again</button>
+  </div>
+
+  <script src="states-data.js"></script>
+  <script src="states-paths.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
