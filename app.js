@@ -35,14 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
       svg.appendChild(path);
     }
 
-    // Draw state labels centered on each state path
+    // Draw state labels using curated positions
     for (const abbr of Object.keys(STATE_PATHS)) {
-      const path = document.getElementById(`state-${abbr}`);
-      if (!path) continue;
-      const bbox = path.getBBox();
+      const label = STATE_LABELS[abbr];
+      if (!label) continue;
       const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      text.setAttribute("x", bbox.x + bbox.width / 2);
-      text.setAttribute("y", bbox.y + bbox.height / 2);
+      text.setAttribute("x", label.x);
+      text.setAttribute("y", label.y);
       text.textContent = abbr;
       svg.appendChild(text);
     }
