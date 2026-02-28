@@ -35,11 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
       svg.appendChild(path);
     }
 
-    // Draw state labels
-    for (const [abbr, pos] of Object.entries(STATE_LABELS)) {
+    // Draw state labels centered on each state path
+    for (const abbr of Object.keys(STATE_PATHS)) {
+      const path = document.getElementById(`state-${abbr}`);
+      if (!path) continue;
+      const bbox = path.getBBox();
       const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      text.setAttribute("x", pos.x);
-      text.setAttribute("y", pos.y);
+      text.setAttribute("x", bbox.x + bbox.width / 2);
+      text.setAttribute("y", bbox.y + bbox.height / 2);
       text.textContent = abbr;
       svg.appendChild(text);
     }
