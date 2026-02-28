@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const completionMessage = document.getElementById("completion-message");
   const completionResetBtn = document.getElementById("completion-reset-btn");
 
+  const tooltip = document.getElementById("tooltip");
+
   let currentState = null;
   let results = {}; // { stateAbbr: "correct" | "incorrect" }
 
@@ -27,6 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
       path.setAttribute("id", `state-${abbr}`);
       path.dataset.state = abbr;
       path.addEventListener("click", () => onStateClick(abbr));
+      path.addEventListener("mouseenter", () => showTooltip(abbr));
+      path.addEventListener("mousemove", (e) => moveTooltip(e));
+      path.addEventListener("mouseleave", hideTooltip);
       svg.appendChild(path);
     }
 
@@ -70,6 +75,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function showCompletion(correct, incorrect) {
     completionMessage.textContent = `You got ${correct} out of 50 correct!`;
     completionBanner.classList.remove("hidden");
+  }
+
+  function showTooltip(abbr) {
+    const stateInfo = STATE_DATA[abbr];
+    if (stateInfo) {
+      tooltip.textContent = stateInfo.name;
+      tooltip.classList.remove("hidden");
+    }
+  }
+
+  function moveTooltip(e) {
+    tooltip.style.left = e.clientX + 14 + "px";
+    tooltip.style.top = e.clientY + 14 + "px";
+  }
+
+  function hideTooltip() {
+    tooltip.classList.add("hidden");
   }
 
   function onStateClick(abbr) {

@@ -294,4 +294,24 @@ main {
   padding: 10px 28px;
 }
 
+/* Tooltip */
+#tooltip {
+  position: fixed;
+  padding: 6px 12px;
+  background: rgba(30, 30, 60, 0.95);
+  color: #e0e0ff;
+  border: 1px solid #5555aa;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 50;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+#tooltip.hidden {
+  display: none;
+}
+
 /* Alaska and Hawaii positioning handled via transform in JS */
