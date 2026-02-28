@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modalFeedback.classList.remove("hidden", "correct", "incorrect");
     if (isCorrect) {
       modalFeedback.classList.add("correct");
-      modalFeedback.textContent = `Correct! ${stateInfo.capital} is the capital of ${stateInfo.name}.`;
+      modalFeedback.textContent = `You're Awesome, Molly! ${stateInfo.capital} is the capital of ${stateInfo.name}.`;
     } else {
       modalFeedback.classList.add("incorrect");
       modalFeedback.textContent = `Incorrect. The capital of ${stateInfo.name} is ${stateInfo.capital}.`;
