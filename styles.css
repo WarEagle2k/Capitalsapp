@@ -313,3 +313,10 @@ main {
 #tooltip.hidden {
   display: none;
 }
+
+footer {
+  padding: 12px 20px 20px;
+  text-align: center;
+  color: #555;
+  font-size: 0.75rem;
+}
