@@ -9,6 +9,14 @@
 </head>
 <body>
   <header>
+    <div id="version-info">
+      <span id="last-updated"></span>
+      <ul>
+        <li>SVG tooltip (works when zoomed)</li>
+        <li>Try again on first wrong answer</li>
+        <li>Centroid-aligned state labels</li>
+      </ul>
+    </div>
     <h1>U.S. State Capitals Quiz</h1>
     <p class="subtitle">Click a state and type its capital</p>
     <div id="scoreboard">
@@ -46,9 +54,7 @@
     <button id="completion-reset-btn">Play Again</button>
   </div>
 
-  <footer>
-    <p id="last-updated"></p>
-  </footer>
+  <footer></footer>
 
   <script src="states-data.js"></script>
   <script src="states-paths.js"></script>
