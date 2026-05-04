@@ -175,5 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", resetQuiz);
   completionResetBtn.addEventListener("click", resetQuiz);
 
+  const lastUpdated = document.getElementById("last-updated");
+  const modified = new Date(document.lastModified);
+  lastUpdated.textContent = "Last updated: " + modified.toLocaleDateString("en-US", {
+    year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"
+  });
+
   buildMap();
 });
