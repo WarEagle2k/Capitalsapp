@@ -14,12 +14,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const completionBanner = document.getElementById("completion-banner");
   const completionMessage = document.getElementById("completion-message");
   const completionResetBtn = document.getElementById("completion-reset-btn");
+  const summaryList = document.getElementById("summary-list");
+  const summaryEmpty = document.getElementById("summary-empty");
+  const masterResetBtn = document.getElementById("master-reset-btn");
+
+  const STORAGE_KEY = "molly-quiz-results";
+  const HISTORY_KEY = "molly-quiz-history";
 
   const totalStates = Object.keys(STATE_PATHS).length;
   let currentState = null;
   let attempts = 0;
   let results = {};
+  let history = {};
   let tooltipGroup, tooltipRect, tooltipText;
+
+  function loadProgress() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) results = JSON.parse(saved);
+      const savedHistory = localStorage.getItem(HISTORY_KEY);
+      if (savedHistory) history = JSON.parse(savedHistory);
+    } catch (e) {
+      results = {};
+      history = {};
+    }
+  }
+
+  function saveProgress() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    } catch (e) {}
+  }
 
   function buildMap() {
     svg.innerHTML = "";
@@ -81,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     updateScoreboard();
+    renderSummary();
   }
 
   function updateScoreboard() {
@@ -178,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
       capitalInput.disabled = true;
       submitBtn.style.display = "none";
       cancelBtn.textContent = "Close";
+      saveProgress();
       applyResults();
     } else if (attempts < 2) {
       modalFeedback.classList.add("incorrect");
@@ -186,14 +214,39 @@ document.addEventListener("DOMContentLoaded", () => {
       capitalInput.focus();
     } else {
       results[currentState] = "incorrect";
+      history[currentState] = (history[currentState] || 0) + 1;
       modalFeedback.classList.add("incorrect");
       modalFeedback.textContent = `Incorrect. The capital of ${stateInfo.name} is ${stateInfo.capital}.`;
       capitalInput.disabled = true;
       submitBtn.style.display = "none";
       cancelBtn.textContent = "Close";
+      saveProgress();
       applyResults();
     }
   });
+
+  function renderSummary() {
+    summaryList.innerHTML = "";
+
+    const missed = Object.entries(history)
+      .filter(([, count]) => count > 0)
+      .sort((a, b) => b[1] - a[1]);
+
+    if (missed.length === 0) {
+      summaryEmpty.classList.remove("hidden");
+      return;
+    }
+
+    summaryEmpty.classList.add("hidden");
+
+    for (const [abbr, count] of missed) {
+      const stateInfo = STATE_DATA[abbr];
+      if (!stateInfo) continue;
+      const li = document.createElement("li");
+      li.innerHTML = `${stateInfo.name} (${stateInfo.capital})<span class="miss-count">×${count}</span>`;
+      summaryList.appendChild(li);
+    }
+  }
 
   cancelBtn.addEventListener("click", closeModal);
 
@@ -211,11 +264,27 @@ document.addEventListener("DOMContentLoaded", () => {
     svg.querySelectorAll("path").forEach(p => {
       p.classList.remove("correct", "incorrect", "answered");
     });
+    saveProgress();
     updateScoreboard();
+    renderSummary();
+  }
+
+  function masterReset() {
+    if (!confirm("This will erase all progress and history. Are you sure?")) return;
+    results = {};
+    history = {};
+    completionBanner.classList.add("hidden");
+    svg.querySelectorAll("path").forEach(p => {
+      p.classList.remove("correct", "incorrect", "answered");
+    });
+    saveProgress();
+    updateScoreboard();
+    renderSummary();
   }
 
   resetBtn.addEventListener("click", resetQuiz);
   completionResetBtn.addEventListener("click", resetQuiz);
+  masterResetBtn.addEventListener("click", masterReset);
 
   const lastUpdated = document.getElementById("last-updated");
   const modified = new Date(document.lastModified);
@@ -223,5 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
     year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"
   });
 
+  loadProgress();
   buildMap();
 });
