@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return copy;
   }
 
+  const allCapitals = Object.values(STATE_DATA).map(info => info.capital);
+
   function startGame() {
     states = shuffle(
       Object.entries(STATE_DATA).map(([abbr, info]) => ({
@@ -71,8 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     flashFeedback.classList.remove("correct", "incorrect");
     flashNext.classList.add("hidden");
 
-    const cities = STATE_CITIES[state.abbr] || [];
-    const wrongChoices = shuffle(cities).slice(0, 3);
+    const wrongChoices = shuffle(allCapitals.filter(c => c !== state.capital)).slice(0, 3);
     const options = shuffle([state.capital, ...wrongChoices]);
 
     flashOptions.innerHTML = "";
