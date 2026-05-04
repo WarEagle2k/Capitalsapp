@@ -121,7 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showCard();
   });
 
+  const flashStartOver = document.getElementById("flash-startover");
   flashRestart.addEventListener("click", startGame);
+  flashStartOver.addEventListener("click", startGame);
 
   const lastUpdated = document.getElementById("last-updated");
   const modified = new Date(document.lastModified);

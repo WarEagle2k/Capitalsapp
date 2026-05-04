@@ -13,6 +13,22 @@
   margin-bottom: 24px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+}
+
+#flash-startover {
+  padding: 6px 18px;
+  border: none;
+  border-radius: 20px;
+  background: #444;
+  color: #ddd;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#flash-startover:hover {
+  background: #666;
 }
 
 #flash-card {

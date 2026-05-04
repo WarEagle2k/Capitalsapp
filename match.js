@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const shuffleBtn = document.getElementById("shuffle-btn");
   const matchScore = document.getElementById("match-score");
 
+  const STORAGE_KEY = "molly-match-progress";
+
   const states = Object.entries(STATE_DATA)
     .map(([abbr, info]) => ({ abbr, name: info.name, capital: info.capital }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -20,8 +22,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return copy;
   }
 
-  function buildQuiz() {
-    shuffledCapitals = shuffle(states.map(s => s.capital));
+  function saveProgress() {
+    try {
+      const inputs = statesList.querySelectorAll(".match-input");
+      const answers = [];
+      inputs.forEach(input => answers.push(input.value));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        shuffledCapitals,
+        answers
+      }));
+    } catch (e) {}
+  }
+
+  function loadProgress() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return null;
+  }
+
+  function buildQuiz(savedData) {
+    if (savedData) {
+      shuffledCapitals = savedData.shuffledCapitals;
+    } else {
+      shuffledCapitals = shuffle(states.map(s => s.capital));
+    }
 
     statesList.innerHTML = "";
     capitalsList.innerHTML = "";
@@ -29,7 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < states.length; i++) {
       const li = document.createElement("li");
-      li.innerHTML = `<span class="state-name">${states[i].name} <span class="state-abbr">(${states[i].abbr})</span></span><input type="text" class="match-input" maxlength="2" data-index="${i}" inputmode="numeric">`;
+      const savedValue = savedData ? (savedData.answers[i] || "") : "";
+      li.innerHTML = `<span class="state-name">${states[i].name} <span class="state-abbr">(${states[i].abbr})</span></span><input type="text" class="match-input" maxlength="2" data-index="${i}" inputmode="numeric" value="${savedValue}">`;
       statesList.appendChild(li);
     }
 
@@ -48,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (next) next.focus();
         }
       });
+      input.addEventListener("input", saveProgress);
     });
   }
 
@@ -80,7 +108,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   checkBtn.addEventListener("click", checkAnswers);
-  shuffleBtn.addEventListener("click", buildQuiz);
+  shuffleBtn.addEventListener("click", () => {
+    localStorage.removeItem(STORAGE_KEY);
+    buildQuiz(null);
+  });
 
   const lastUpdated = document.getElementById("last-updated");
   const modified = new Date(document.lastModified);
@@ -88,5 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"
   });
 
-  buildQuiz();
+  const saved = loadProgress();
+  buildQuiz(saved);
 });
