@@ -121,4 +121,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saved = loadProgress();
   buildQuiz(saved);
+  saveProgress();
 });
