@@ -2,3 +2,4 @@ node_modules/
 package.json
 package-lock.json
 generate-paths.js
+compute-centroids.js
