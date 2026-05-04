@@ -13,9 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const flashRemaining = document.getElementById("flash-remaining");
 
   let states = [];
+  let missed = [];
   let currentIndex = 0;
   let correctNum = 0;
   let incorrectNum = 0;
+  let inReview = false;
 
   function shuffle(arr) {
     const copy = [...arr];
@@ -34,10 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
         capital: info.capital
       }))
     );
+    missed = [];
     currentIndex = 0;
     correctNum = 0;
     incorrectNum = 0;
+    inReview = false;
     flashComplete.classList.add("hidden");
+    flashCard.classList.remove("hidden");
+    updateScoreboard();
+    showCard();
+  }
+
+  function startReview() {
+    states = shuffle(missed);
+    missed = [];
+    currentIndex = 0;
+    inReview = true;
     flashCard.classList.remove("hidden");
     updateScoreboard();
     showCard();
@@ -52,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function showCard() {
     const state = states[currentIndex];
     flashStateName.textContent = state.name;
-    flashStateAbbr.textContent = `(${state.abbr})`;
+    flashStateAbbr.textContent = inReview ? `(${state.abbr}) — Review` : `(${state.abbr})`;
     flashFeedback.classList.add("hidden");
     flashFeedback.classList.remove("correct", "incorrect");
     flashNext.classList.add("hidden");
@@ -91,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       flashFeedback.textContent = `You're Awesome, Molly! ${state.capital} is correct!`;
     } else {
       incorrectNum++;
+      missed.push(state);
       btn.classList.add("incorrect");
       flashFeedback.classList.add("incorrect");
       flashFeedback.textContent = `Not quite. ${state.capital} is the capital of ${state.name}.`;
@@ -100,6 +115,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentIndex < states.length - 1) {
       flashNext.classList.remove("hidden");
+    } else if (missed.length > 0) {
+      flashNext.classList.remove("hidden");
+      flashNext.textContent = `Review ${missed.length} Missed`;
     } else {
       setTimeout(showComplete, 1500);
     }
@@ -108,17 +126,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function showComplete() {
     flashCard.classList.add("hidden");
     flashComplete.classList.remove("hidden");
-    if (correctNum === states.length) {
+    if (incorrectNum === 0) {
       flashFinalScore.textContent = "Perfect score! You're Awesome, Molly!";
     } else {
-      flashFinalScore.textContent = `You got ${correctNum} out of ${states.length} correct!`;
+      flashFinalScore.textContent = `You got ${correctNum} out of ${correctNum + incorrectNum} correct!`;
     }
   }
 
   flashNext.addEventListener("click", () => {
-    currentIndex++;
-    updateScoreboard();
-    showCard();
+    if (currentIndex >= states.length - 1 && missed.length > 0) {
+      flashNext.textContent = "Next";
+      startReview();
+    } else {
+      currentIndex++;
+      updateScoreboard();
+      showCard();
+    }
   });
 
   const flashStartOver = document.getElementById("flash-startover");
