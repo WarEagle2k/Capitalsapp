@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const totalStates = Object.keys(STATE_PATHS).length;
   let currentState = null;
+  let attempts = 0;
   let results = {};
   let tooltipGroup, tooltipRect, tooltipText;
 
@@ -136,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentState = abbr;
     const stateInfo = STATE_DATA[abbr];
     modalStateName.textContent = stateInfo.name;
+    attempts = 0;
     capitalInput.value = "";
     modalFeedback.classList.add("hidden");
     modalFeedback.classList.remove("correct", "incorrect");
@@ -164,25 +166,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const stateInfo = STATE_DATA[currentState];
     const userAnswer = normalizeAnswer(capitalInput.value);
     const correctAnswer = normalizeAnswer(stateInfo.capital);
-
     const isCorrect = userAnswer === correctAnswer;
 
-    results[currentState] = isCorrect ? "correct" : "incorrect";
-
+    attempts++;
     modalFeedback.classList.remove("hidden", "correct", "incorrect");
+
     if (isCorrect) {
+      results[currentState] = "correct";
       modalFeedback.classList.add("correct");
       modalFeedback.textContent = `You're Awesome, Molly! ${stateInfo.capital} is the capital of ${stateInfo.name}.`;
+      capitalInput.disabled = true;
+      submitBtn.style.display = "none";
+      cancelBtn.textContent = "Close";
+      applyResults();
+    } else if (attempts < 2) {
+      modalFeedback.classList.add("incorrect");
+      modalFeedback.textContent = "Not quite — try again!";
+      capitalInput.value = "";
+      capitalInput.focus();
     } else {
+      results[currentState] = "incorrect";
       modalFeedback.classList.add("incorrect");
       modalFeedback.textContent = `Incorrect. The capital of ${stateInfo.name} is ${stateInfo.capital}.`;
+      capitalInput.disabled = true;
+      submitBtn.style.display = "none";
+      cancelBtn.textContent = "Close";
+      applyResults();
     }
-
-    capitalInput.disabled = true;
-    submitBtn.style.display = "none";
-    cancelBtn.textContent = "Close";
-
-    applyResults();
   });
 
   cancelBtn.addEventListener("click", closeModal);
