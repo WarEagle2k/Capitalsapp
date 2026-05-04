@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Molly's Capital Flash Cards</title>
+  <meta name="description" content="Flash card quiz for US state capitals">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="flash.css">
+</head>
+<body>
+  <header>
+    <span id="last-updated"></span>
+    <h1>Molly's Capital Flash Cards</h1>
+    <p class="subtitle">Pick the capital from the choices</p>
+    <nav id="page-nav">
+      <a href="index.html">Map Quiz</a>
+      <a href="match.html">Matching Quiz</a>
+      <a href="flash.html" class="active">Flash Cards</a>
+    </nav>
+  </header>
+
+  <main id="flash-main">
+    <div id="flash-scoreboard">
+      <span id="flash-correct" class="score correct">Correct: 0</span>
+      <span id="flash-incorrect" class="score incorrect">Incorrect: 0</span>
+      <span id="flash-remaining" class="score remaining">Remaining: 50</span>
+    </div>
+
+    <div id="flash-card">
+      <h2 id="flash-state-name"></h2>
+      <p id="flash-state-abbr"></p>
+      <div id="flash-options"></div>
+      <p id="flash-feedback" class="hidden"></p>
+      <button id="flash-next" class="hidden">Next</button>
+    </div>
+
+    <div id="flash-complete" class="hidden">
+      <h2>All Done!</h2>
+      <p id="flash-final-score"></p>
+      <button id="flash-restart">Play Again</button>
+    </div>
+  </main>
+
+  <footer></footer>
+
+  <script src="states-data.js"></script>
+  <script src="cities-data.js"></script>
+  <script src="flash.js"></script>
+</body>
+</html>

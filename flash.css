@@ -1,0 +1,161 @@
+#flash-main {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#flash-scoreboard {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#flash-card {
+  background: #2a2a4a;
+  border-radius: 16px;
+  padding: 36px 40px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+#flash-card.hidden {
+  display: none;
+}
+
+#flash-state-name {
+  font-size: 2rem;
+  color: #e0e0ff;
+  margin-bottom: 4px;
+}
+
+#flash-state-abbr {
+  color: #777;
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+#flash-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-btn {
+  padding: 14px 20px;
+  border: 2px solid #555;
+  border-radius: 10px;
+  background: #1a1a2e;
+  color: #eee;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: #7777cc;
+  background: #2a2a5a;
+}
+
+.option-btn:disabled {
+  cursor: default;
+}
+
+.option-btn.correct {
+  border-color: #1b8a4a;
+  background: #0d3720;
+  color: #b6f5d0;
+}
+
+.option-btn.incorrect {
+  border-color: #b83030;
+  background: #3d1111;
+  color: #f5b6b6;
+}
+
+#flash-feedback {
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+#flash-feedback.hidden {
+  display: none;
+}
+
+#flash-feedback.correct {
+  background: #0d7337;
+  color: #b6f5d0;
+}
+
+#flash-feedback.incorrect {
+  background: #8b1a1a;
+  color: #f5b6b6;
+}
+
+#flash-next {
+  margin-top: 18px;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 20px;
+  background: #4a4aaa;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#flash-next:hover {
+  background: #5c5cc0;
+}
+
+#flash-next.hidden {
+  display: none;
+}
+
+#flash-complete {
+  background: #2a2a4a;
+  border: 2px solid #5555aa;
+  border-radius: 16px;
+  padding: 40px 50px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+#flash-complete.hidden {
+  display: none;
+}
+
+#flash-complete h2 {
+  font-size: 1.8rem;
+  color: #e0e0ff;
+  margin-bottom: 10px;
+}
+
+#flash-final-score {
+  color: #aaa;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+#flash-restart {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 20px;
+  background: #4a4aaa;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#flash-restart:hover {
+  background: #5c5cc0;
+}
