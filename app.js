@@ -14,11 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const completionBanner = document.getElementById("completion-banner");
   const completionMessage = document.getElementById("completion-message");
   const completionResetBtn = document.getElementById("completion-reset-btn");
-  const tooltip = document.getElementById("tooltip");
 
   const totalStates = Object.keys(STATE_PATHS).length;
   let currentState = null;
   let results = {};
+  let tooltipGroup, tooltipRect, tooltipText;
 
   function buildMap() {
     svg.innerHTML = "";
@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
       path.dataset.state = abbr;
       path.addEventListener("click", () => onStateClick(abbr));
       path.addEventListener("mouseenter", () => showTooltip(abbr));
-      path.addEventListener("mousemove", moveTooltip);
       path.addEventListener("mouseleave", hideTooltip);
+      path.addEventListener("touchstart", () => showTooltip(abbr), { passive: true });
       svg.appendChild(path);
     }
 
@@ -44,6 +44,29 @@ document.addEventListener("DOMContentLoaded", () => {
       text.textContent = abbr;
       svg.appendChild(text);
     }
+
+    tooltipGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    tooltipGroup.setAttribute("id", "svg-tooltip");
+    tooltipGroup.setAttribute("pointer-events", "none");
+    tooltipGroup.style.display = "none";
+
+    tooltipRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    tooltipRect.setAttribute("rx", "3");
+    tooltipRect.setAttribute("fill", "rgba(30, 30, 60, 0.95)");
+    tooltipRect.setAttribute("stroke", "#5555aa");
+    tooltipRect.setAttribute("stroke-width", "1");
+
+    tooltipText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    tooltipText.setAttribute("fill", "#e0e0ff");
+    tooltipText.setAttribute("font-size", "11");
+    tooltipText.setAttribute("font-weight", "600");
+    tooltipText.setAttribute("text-anchor", "middle");
+    tooltipText.setAttribute("dominant-baseline", "central");
+    tooltipText.setAttribute("font-family", "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif");
+
+    tooltipGroup.appendChild(tooltipRect);
+    tooltipGroup.appendChild(tooltipText);
+    svg.appendChild(tooltipGroup);
 
     applyResults();
   }
@@ -83,23 +106,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showTooltip(abbr) {
     const stateInfo = STATE_DATA[abbr];
-    if (stateInfo) {
-      tooltip.textContent = stateInfo.name;
-      tooltip.classList.remove("hidden");
-    }
-  }
+    const label = STATE_LABELS[abbr];
+    if (!stateInfo || !label) return;
 
-  function moveTooltip(e) {
-    tooltip.style.left = e.clientX + 14 + "px";
-    tooltip.style.top = e.clientY + 14 + "px";
+    tooltipText.textContent = stateInfo.name;
+    tooltipGroup.style.display = "";
+
+    const tx = label.x;
+    const ty = label.y - 16;
+    tooltipText.setAttribute("x", tx);
+    tooltipText.setAttribute("y", ty);
+
+    const bbox = tooltipText.getBBox();
+    const pad = 5;
+    tooltipRect.setAttribute("x", bbox.x - pad);
+    tooltipRect.setAttribute("y", bbox.y - pad);
+    tooltipRect.setAttribute("width", bbox.width + pad * 2);
+    tooltipRect.setAttribute("height", bbox.height + pad * 2);
   }
 
   function hideTooltip() {
-    tooltip.classList.add("hidden");
+    tooltipGroup.style.display = "none";
   }
 
   function onStateClick(abbr) {
     if (results[abbr]) return;
+    hideTooltip();
 
     currentState = abbr;
     const stateInfo = STATE_DATA[abbr];
