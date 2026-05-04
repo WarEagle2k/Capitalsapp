@@ -313,5 +313,3 @@ main {
 #tooltip.hidden {
   display: none;
 }
-
-/* Alaska and Hawaii positioning handled via transform in JS */

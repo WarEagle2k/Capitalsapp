@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalStateName = document.getElementById("modal-state-name");
   const capitalInput = document.getElementById("capital-input");
   const capitalForm = document.getElementById("capital-form");
+  const submitBtn = document.getElementById("submit-btn");
   const cancelBtn = document.getElementById("cancel-btn");
   const modalFeedback = document.getElementById("modal-feedback");
   const correctCount = document.getElementById("correct-count");
@@ -13,16 +14,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const completionBanner = document.getElementById("completion-banner");
   const completionMessage = document.getElementById("completion-message");
   const completionResetBtn = document.getElementById("completion-reset-btn");
-
   const tooltip = document.getElementById("tooltip");
 
+  const totalStates = Object.keys(STATE_PATHS).length;
   let currentState = null;
-  let results = {}; // { stateAbbr: "correct" | "incorrect" }
+  let results = {};
 
   function buildMap() {
     svg.innerHTML = "";
 
-    // Draw state paths
     for (const [abbr, pathData] of Object.entries(STATE_PATHS)) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", pathData);
@@ -30,12 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
       path.dataset.state = abbr;
       path.addEventListener("click", () => onStateClick(abbr));
       path.addEventListener("mouseenter", () => showTooltip(abbr));
-      path.addEventListener("mousemove", (e) => moveTooltip(e));
+      path.addEventListener("mousemove", moveTooltip);
       path.addEventListener("mouseleave", hideTooltip);
       svg.appendChild(path);
     }
 
-    // Draw state labels using curated positions
     for (const abbr of Object.keys(STATE_PATHS)) {
       const label = STATE_LABELS[abbr];
       if (!label) continue;
@@ -61,21 +60,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateScoreboard() {
-    const correctNum = Object.values(results).filter(r => r === "correct").length;
-    const incorrectNum = Object.values(results).filter(r => r === "incorrect").length;
-    const remainingNum = 50 - correctNum - incorrectNum;
+    let correctNum = 0, incorrectNum = 0;
+    for (const r of Object.values(results)) {
+      if (r === "correct") correctNum++;
+      else incorrectNum++;
+    }
+    const remainingNum = totalStates - correctNum - incorrectNum;
 
     correctCount.textContent = `Correct: ${correctNum}`;
     incorrectCount.textContent = `Incorrect: ${incorrectNum}`;
     remainingCount.textContent = `Remaining: ${remainingNum}`;
 
     if (remainingNum === 0) {
-      showCompletion(correctNum, incorrectNum);
+      showCompletion(correctNum);
     }
   }
 
-  function showCompletion(correct, incorrect) {
-    completionMessage.textContent = `You got ${correct} out of 50 correct!`;
+  function showCompletion(correct) {
+    completionMessage.textContent = `You got ${correct} out of ${totalStates} correct!`;
     completionBanner.classList.remove("hidden");
   }
 
@@ -97,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function onStateClick(abbr) {
-    if (results[abbr]) return; // already answered
+    if (results[abbr]) return;
 
     currentState = abbr;
     const stateInfo = STATE_DATA[abbr];
@@ -107,9 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
     modalFeedback.classList.remove("correct", "incorrect");
     modalOverlay.classList.remove("hidden");
 
-    // Re-enable form for new attempt
     capitalInput.disabled = false;
-    document.getElementById("submit-btn").style.display = "";
+    submitBtn.style.display = "";
     cancelBtn.textContent = "Cancel";
 
     setTimeout(() => capitalInput.focus(), 50);
@@ -136,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     results[currentState] = isCorrect ? "correct" : "incorrect";
 
-    // Show feedback
     modalFeedback.classList.remove("hidden", "correct", "incorrect");
     if (isCorrect) {
       modalFeedback.classList.add("correct");
@@ -146,9 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
       modalFeedback.textContent = `Incorrect. The capital of ${stateInfo.name} is ${stateInfo.capital}.`;
     }
 
-    // Disable further input
     capitalInput.disabled = true;
-    document.getElementById("submit-btn").style.display = "none";
+    submitBtn.style.display = "none";
     cancelBtn.textContent = "Close";
 
     applyResults();
@@ -167,12 +166,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetQuiz() {
     results = {};
     completionBanner.classList.add("hidden");
-    buildMap();
+    svg.querySelectorAll("path").forEach(p => {
+      p.classList.remove("correct", "incorrect", "answered");
+    });
+    updateScoreboard();
   }
 
   resetBtn.addEventListener("click", resetQuiz);
   completionResetBtn.addEventListener("click", resetQuiz);
 
-  // Initialize
   buildMap();
 });
