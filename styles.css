@@ -41,6 +41,30 @@ header h1 {
   font-size: 0.95rem;
 }
 
+#page-nav {
+  margin-top: 12px;
+}
+
+#page-nav a {
+  color: #888;
+  text-decoration: none;
+  margin: 0 10px;
+  padding: 4px 14px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+#page-nav a:hover {
+  background: #3a3a6a;
+  color: #e0e0ff;
+}
+
+#page-nav a.active {
+  background: #4a4aaa;
+  color: #fff;
+}
+
 #scoreboard {
   display: flex;
   justify-content: center;
